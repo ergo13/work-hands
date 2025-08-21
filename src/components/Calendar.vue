@@ -18,7 +18,7 @@
         v-for="(day, index) in daysInCurrentMonth"
         :class="[
           'calendar__day',
-          { 'calendar__active-day': selectedDay === day.date },
+          { 'calendar__active-day': dateCompare(day.date) },
         ]"
         :key="`day-${index}`"
         @click="selectDay(day)"
@@ -26,9 +26,9 @@
         {{ day.dayInt }}
       </li>
     </ul>
-
+    <br />
     <div>Выбранный день: {{ getSelectedDay }}</div>
-
+    <br />
     <select name="languages" id="languages-select" @change="languageChange">
       <option value="">Выбор языка</option>
       <option value="ru-RU">Русский</option>
@@ -40,16 +40,16 @@
 export default {
   props: {
     propDate: {
-      type: Date,
+      type: String,
       required: false,
     },
   },
 
   data() {
     return {
-      localDate: new Date(),
+      localDate: new Date(new Date().setHours(0, 0, 0, 0)),
 
-      selectedDay: new Date(new Date().setHours(0, 0, 0)),
+      selectedDay: new Date(new Date().setHours(0, 0, 0, 0)),
 
       formatterConfig: {
         weekday: {
@@ -73,15 +73,24 @@ export default {
 
   computed: {
     weekdayFormatter() {
-      return new Intl.DateTimeFormat(this.currentLocal, this.formatterConfig.weekday);
+      return new Intl.DateTimeFormat(
+        this.currentLocal,
+        this.formatterConfig.weekday
+      );
     },
 
     monthFormatter() {
-      return new Intl.DateTimeFormat(this.currentLocal, this.formatterConfig.month)
+      return new Intl.DateTimeFormat(
+        this.currentLocal,
+        this.formatterConfig.month
+      );
     },
 
     dateFormatter() {
-      return new Intl.DateTimeFormat(this.currentLocal, this.formatterConfig.date)
+      return new Intl.DateTimeFormat(
+        this.currentLocal,
+        this.formatterConfig.date
+      );
     },
 
     getSelectedDay() {
@@ -110,8 +119,13 @@ export default {
       return days;
     },
 
+    qwe () {
+        return this.selectedDay.getTime()
+    },
+
     daysInCurrentMonth() {
-      const monthStart = new Date(this.localDate.setDate(1));
+      const date = new Date(this.localDate);
+      const monthStart = new Date(date.setDate(1));
       const dayInMonth = new Date(
         this.currentYear,
         this.currentMonthInt + 1,
@@ -124,9 +138,9 @@ export default {
           this.currentYear,
           this.currentMonthInt,
           monthStart.getDate() + i
-        );
+        ).setHours(0,0,0, 0)
         const dayInt = i + 1;
-        days.push({ date, dayInt });
+        days.push({ date: new Date(date), dayInt });
       }
 
       return days;
@@ -136,7 +150,15 @@ export default {
   methods: {
     languageChange(event) {
       const language = event.target.value;
-      this.currentLocal = language
+      this.currentLocal = language;
+    },
+
+    dateCompare(date) {
+      if (date instanceof Date) {
+        return date.getTime() === this.selectedDay.getTime();
+      }
+
+      return false;
     },
 
     selectDay(day) {
@@ -154,8 +176,9 @@ export default {
 
   created() {
     if (this.propDate) {
-      this.localDate = new Date(this.propDate);
-      this.selectedDay = new Date(new Date(this.propDate).setHours(0, 0, 0));
+      const date = new Date(new Date(this.propDate).setHours(0, 0, 0, 0));
+      this.localDate = date;
+      this.selectedDay = date;
     }
   },
 };
