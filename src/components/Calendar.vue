@@ -150,7 +150,9 @@ export default {
   methods: {
     languageChange(event) {
       const language = event.target.value;
-      this.currentLocal = language;
+      if (language) {
+        this.currentLocal = language;
+      }
     },
 
     dateCompare(date) {
