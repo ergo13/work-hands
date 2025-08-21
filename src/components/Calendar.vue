@@ -119,8 +119,8 @@ export default {
       return days;
     },
 
-    qwe () {
-        return this.selectedDay.getTime()
+    qwe() {
+      return this.selectedDay.getTime();
     },
 
     daysInCurrentMonth() {
@@ -138,7 +138,7 @@ export default {
           this.currentYear,
           this.currentMonthInt,
           monthStart.getDate() + i
-        ).setHours(0,0,0, 0)
+        ).setHours(0, 0, 0, 0);
         const dayInt = i + 1;
         days.push({ date: new Date(date), dayInt });
       }
@@ -187,6 +187,8 @@ export default {
 <style scoped lang="css">
 .calendar {
   max-width: 600px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px;
 }
 
 .calendar__moth-swapper {
